@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Forum Notifier</title>
+</head>
+<body onload=grab()>
+	<h1>Forum Notifier</h1>
+
+	<script>
+		var oldtime = "0"
+		//setInterval(grab, 60000)
+		function grab(){
+			var pull = new XMLHttpRequest()
+	pull.open("GET", `https://scratch.mit.edu/discuss/feeds/forum/1/`);
+	pull.send();
+		pull.onreadystatechange = function() {
+			if (pull.readyState === 4 && pull.status === 200) {
+				var parser = new DOMParser()
+				var pulldone = parser.parseFromString(pull.responseText, "text/html")
+				console.log(pulldone);
+				var newtime = pulldone.getElementsByTagName("updated")[0].childNodes[0].nodeValue;
+				console.log(newtime);
+				if (newtime != oldtime && oldtime !="0") {
+					oldtime = newtime;
+					var notify = new Notification('New Post', {
+                	body: 'There is a New Post in the Suggestions Forum!',
+           			});
+					//alert ("New Post");
+				}
+			}
+		}
+		}
+			
+
+	</script>
+</body>
+</html>
