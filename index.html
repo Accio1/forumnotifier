@@ -3,16 +3,36 @@
 <head>
 	<title>Forum Notifier</title>
 </head>
-<body onload=Notification.requestPermission() onload=grab()>
+<body onload=start()>
 	<h1>Forum Notifier</h1>
 
 	<script>
-		var oldtime = "0"
-		setInterval(grab, 10000)
-		function grab(){
-			var pull = new XMLHttpRequest()
-	pull.open("GET", `https://scratch.mit.edu/discuss/feeds/forum/1/`);
-	pull.send();
+	//notification permission requesting
+	function start() {
+		if (!("Notification" in window)) {
+			alert("This browser does not support desktop notification");
+		}
+
+		else if (Notification.permission === "granted") {
+			grab();
+		}
+
+		else if (Notification.permission !== "denied") {
+			Notification.requestPermission().then(function (permission) {
+				if (permission === "granted") {
+					grab();
+				}
+			});
+		}
+	}
+		
+	//grab function
+	var oldtime = "0"
+	setInterval(grab, 10000)
+	function grab(){
+		var pull = new XMLHttpRequest()
+		pull.open("GET", `https://scratch.mit.edu/discuss/feeds/forum/1/`);
+		pull.send();
 		pull.onreadystatechange = function() {
 			if (pull.readyState === 4 && pull.status === 200) {
 				var parser = new DOMParser()
@@ -22,14 +42,12 @@
 				console.log(newtime);
 				if (newtime != oldtime && oldtime !="0") {
 					oldtime = newtime;
-					var notify = new Notification('New Post', {
-                	body: 'There is a New Post in the Suggestions Forum!',
-           			});
+					var notification = new Notification("New Post")
 					//alert ("New Post");
 				}
 			}
 		}
-		}
+	}
 			
 
 	</script>
