@@ -28,7 +28,7 @@
 		
 	//grab function
 	var oldtime = "0"
-	setInterval(grab, 10000)
+	setInterval(grab, 30000)
 	function grab(){
 		var pull = new XMLHttpRequest()
 		pull.open("GET", `https://scratch.mit.edu/discuss/feeds/forum/1/`);
@@ -41,10 +41,10 @@
 				var newtime = pulldone.getElementsByTagName("updated")[0].childNodes[0].nodeValue;
 				console.log(newtime);
 				if (newtime != oldtime && oldtime !="0") {
-					oldtime = newtime;
 					var notification = new Notification("New Post")
 					//alert ("New Post");
 				}
+			oldtime = newtime
 			}
 		}
 	}
